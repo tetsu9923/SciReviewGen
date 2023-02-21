@@ -10,43 +10,18 @@ import pandas as pd
 from tqdm import tqdm
 
 
-logging.basicConfig(format='%(message)s', level=logging.DEBUG)
-
-parser = argparse.ArgumentParser(description='')
-parser.add_argument('dataset_path', help='Path to generated dataset')
-parser.add_argument('--n_citing_sentence', type=int, default=3, help='Number of citing sentence in validation set')
-args = parser.parse_args()
-
-
-def make_summarization_csv():
-    logging.info('Making csv files in summarization format...')
+def make_summarization_csv(args):
+    logging.info('Making csv files for summarization...')
     logging.info("Columns={'reference': cited paper abstracts (+ citing sentences), 'target': literature review chapter texts}")
     section_df = pd.read_pickle(os.path.join(args.dataset_path, 'section_survey_df.pkl'))
 
-    introduction_ids = []
-    conclusion_ids = []
-
-    prev_id = ""
-    for i, _id in enumerate(section_df["paper_id"]):
-        if _id != prev_id:
-            prev_id = _id
-            introduction_ids.append(section_df.index[i])
-            if i != 0:
-                conclusion_ids.append(section_df.index[i-1])
-
-    drop_ids = np.unique(np.concatenate([introduction_ids, conclusion_ids]))
-    dataset_df = section_df.drop(index=list(drop_ids))  # Remove Introduction and Conclusion sections
-    dataset_df = dataset_df[dataset_df['n_bibs'].apply(lambda n_bibs: n_bibs > 1)]  # Remove sections with less than two citations
+    dataset_df = section_df[section_df['n_bibs'].apply(lambda n_bibs: n_bibs > 1)]  # Remove sections with less than two citations
 
     dataset_df = dataset_df.rename(columns={'text': 'target'})
     dataset_df = dataset_df.rename(columns={'bib_cinting_sentences': 'bib_citing_sentences'})
 
-    if args.n_citing_sentence <= 0:
-        dataset_df['reference'] = dataset_df['bib_abstracts'].apply(lambda bib_abstracts: ' '.join(['[CLS] {}. [SEP] BIB{}'.format(abstract.strip()[:-6], bib) for bib, abstract in bib_abstracts.items()]))
-    else:
-        dataset_df['reference'] = dataset_df[['bib_abstracts', 'bib_citing_sentences']].apply(lambda bib_abstracts: ' '.join(['[CLS] {}. [SEP] {} [SEP] BIB{}'.format(abstract.strip()[:-6], ' '.join(citing_sentence[:args.n_citing_sentence]), bib) for bib, abstract, citing_sentence in zip(bib_abstracts[0].keys(), bib_abstracts[0].values(), bib_abstracts[1].values())]), axis=1)
-        #dataset_df['reference'] = dataset_df[['bib_abstracts', 'bib_citing_sentences']].apply(lambda bib_abstracts: ' '.join(['{}. BIB{}'  for abstract, citing_sentence in zip(bib_abstracts[0].items(), bib_abstracts[1].items())]))
-
+    dataset_df['reference'] = dataset_df['bib_abstracts'].apply(lambda bib_abstracts: ' '.join(['{} BIB{}'.format(abstract, bib) for bib, abstract in bib_abstracts.items()]))
+    
     split_df = dataset_df['split']
     dataset_df = dataset_df[['reference', 'target']]
 
@@ -60,5 +35,36 @@ def make_summarization_csv():
     logging.info('Done!')
 
 
+def anonymize_bib(args):
+    for split in ["val", "test", "train"]:
+        df = pd.read_csv(os.path.join(args.dataset_path, '{}.csv'.format(split)))
+        bar = tqdm(total=len(df))
+        for row in df.itertuples():
+            cnt = 1
+            bib_dict = {}
+            for i in range(len(row.reference)):
+                if row.reference[i:i+7] == "<s> BIB":
+                    bib_dict[row.reference[i+7:].split(" ")[0]] = cnt
+                    cnt += 1
+            ref = row.reference
+            tgt = row.target
+            for key, value in bib_dict.items():
+                ref = re.sub("BIB{}".format(key), "BIB{:0>3}".format(value), ref)
+                tgt = re.sub("BIB{}".format(key), "BIB{:0>3}".format(value), tgt)
+            df.at[row.Index, "reference"] = ref
+            df.at[row.Index, "target"] = tgt
+            bar.update(1)
+        print("Saving...")
+        print(df)
+        df.to_csv(os.path.join(args.dataset_path, '{}.csv'.format(split)))
+
+
 if __name__ == "__main__":
-    make_summarization_csv()
+    logging.basicConfig(format='%(message)s', level=logging.DEBUG)
+
+    parser = argparse.ArgumentParser(description='')
+    parser.add_argument('dataset_path', help='Path to the generated dataset')
+    args = parser.parse_args()
+
+    make_summarization_csv(args)
+    anonymize_bib(args)

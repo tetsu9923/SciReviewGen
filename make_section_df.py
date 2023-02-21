@@ -1,6 +1,3 @@
-# To do: 最初からアブストあるデータに絞る line.95
-
-
 import os
 import logging
 import pickle
@@ -14,20 +11,11 @@ import pandas as pd
 from tqdm import tqdm
 
 
-extra_abbreviations = ['dr', 'vs', 'mr', 'mrs', 'prof', 'inc', 'i.e', 'al']
-tokenizer = nltk.data.load('tokenizers/punkt/english.pickle')
-tokenizer._params.abbrev_types.update(extra_abbreviations)
+def append_citing_sentence(args):
+    extra_abbreviations = ['dr', 'vs', 'mr', 'mrs', 'prof', 'inc', 'i.e', 'al']
+    tokenizer = nltk.data.load('tokenizers/punkt/english.pickle')
+    tokenizer._params.abbrev_types.update(extra_abbreviations)
 
-logging.basicConfig(format='%(message)s', level=logging.DEBUG)
-
-parser = argparse.ArgumentParser(description='')
-parser.add_argument('dataset_path', help='Path to generated dataset')
-parser.add_argument('--n_val', type=int, default=1000, help='Number of literature review papers in validation set')
-parser.add_argument('--n_test', type=int, default=1000, help='Number of literature review papers in test set')
-args = parser.parse_args()
-
-
-def append_citing_sentence():
     logging.info('Loading citing sentences...')
     cs_survey_ids = pd.read_pickle(os.path.join(args.dataset_path, 'metadata_survey_df.pkl')).index
     pdf_outbound_df = pd.read_pickle(os.path.join(args.dataset_path, 'pdf_outbound_df.pkl'))
@@ -87,45 +75,12 @@ def append_citing_sentence():
     logging.info('Done!')
 
 
-def make_section_df():
+def make_scireviewgen(args):
     logging.info('Making section_df...')
     metadata_outbound_df = pd.read_pickle(os.path.join(args.dataset_path, 'metadata_outbound_citation_df.pkl'))
     metadata_outbound_df = metadata_outbound_df.dropna(subset=['abstract'])
     pdf_survey_df = pd.read_pickle(os.path.join(args.dataset_path, 'pdf_survey_df.pkl'))
-    pdf_survey_df = pdf_survey_df[pdf_survey_df["abstract"].apply(lambda s: type(s) == str)]  # 正しく動くか確認
-
-    test_list = [
-        "Summarization from Medical Documents: A Survey",
-        "Text Summarization Techniques: A Brief Survey",
-        "A Survey of Text Summarization Extractive Techniques",
-        "Automatic Keyword Extraction for Text Summarization: A Survey",
-        "A Survey For Multi-Document Summarization",
-        "A Survey of Unstructured Text Summarization Techniques",
-
-        "A Comprehensive Survey on Graph Neural Networks",
-        "Graph neural networks: A review of methods and applications",
-    
-        "Graph Embedding Techniques, Applications, and Performance: A Survey",
-        "A Comprehensive Survey of Graph Embedding: Problems, Techniques, and Applications"
-    ]
-
-    n_val = args.n_val
-    n_test = args.n_test
-    assert n_test >= len(test_list)
-
-    pdf_survey_df["split"] = ""
-    n_train = len(pdf_survey_df) - (n_val + n_test)
-    for i, row in enumerate(pdf_survey_df.itertuples()):
-        if row.title in test_list:
-            pdf_survey_df.at[pdf_survey_df.index[i], "split"] = "test"
-        elif n_train > 0:
-            pdf_survey_df.at[pdf_survey_df.index[i], "split"] = "train"
-            n_train -= 1
-        elif n_val > 0:
-            pdf_survey_df.at[pdf_survey_df.index[i], "split"] = "val"
-            n_val -= 1
-        else:
-            pdf_survey_df.at[pdf_survey_df.index[i], "split"] = "test"
+    pdf_survey_df = pdf_survey_df[pdf_survey_df["abstract"].apply(lambda s: type(s) == str)]  # 正しく動くか確認    
 
     def get_section_df(row):
         sections_duplicate = [paragraph['section'] for paragraph in row.body_text]
@@ -179,10 +134,45 @@ def make_section_df():
 
     section_survey_df = pd.concat(pdf_survey_df.apply(get_section_df, axis=1).values)
     section_survey_df = section_survey_df[section_survey_df["text"].apply(len) >= 1]  # Remove sections without body text
-    section_survey_df.to_pickle(os.path.join(args.dataset_path, 'section_survey_df.pkl'))
+
+    print(section_survey_df)
+    with open ("filtering_dict.pkl", "rb") as f:
+        filtering_dict = pickle.load(f)
+    section_survey_df = section_survey_df[section_survey_df["paper_id"] in filtering_dict.keys()]
+    section_survey_df["split"] = section_survey_df["paper_id"].apply(lambda s: filtering_dict[s])
+    print(section_survey_df)
+
+    if args.version == "split":
+        df = df[df["bib_abstracts"].apply(lambda _dict: len(_dict) >= 2)]
+        section_survey_df.to_pickle(os.path.join(args.dataset_path, 'split_survey_df.pkl'))
+    else:
+        section_survey_df = section_survey_df.groupby('paper_id').agg({
+            'title': lambda l: l[0],
+            'abstract': lambda l: l[0],
+            'section': lambda l: l,
+            'text': lambda l: l,
+            'n_bibs': lambda l: l,
+            'n_nonbibs': lambda l: l,
+            'bib_titles': lambda l: l,
+            'bib_abstracts': lambda l: l,
+            'bib_citing_sentences': lambda l: l,
+            'split': lambda l: l[0],
+        })
+        print(section_survey_df)
+        section_survey_df.to_pickle(os.path.join(args.dataset_path, 'original_survey_df.pkl'))
+
     logging.info('Done!')
 
 
 if __name__ == "__main__":
-    append_citing_sentence()
-    make_section_df()
+    logging.basicConfig(format='%(message)s', level=logging.DEBUG)
+
+    parser = argparse.ArgumentParser(description='')
+    parser.add_argument('dataset_path', help='Path to the generated dataset')
+    parser.add_argument('version', default="split", help='Specify the version ("split" or "original")',  choices=['split', 'original'])
+    parser.add_argument('--n_val', type=int, default=1000, help='Number of literature review papers in validation set')
+    parser.add_argument('--n_test', type=int, default=1000, help='Number of literature review papers in test set')
+    args = parser.parse_args()
+
+    append_citing_sentence(args)  # collect citing sentences for the cited papers
+    make_scireviewgen(args)  # make scireviewgen dataset in the form of pandas dataframe
