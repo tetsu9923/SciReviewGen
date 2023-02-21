@@ -28,7 +28,36 @@ python json_to_df.py \
 python make_section_df.py \
   -dataset_path <Path to the generated dataset> \
   -version <the version of SciReviewGen ("split" or "original")>
-python filtering.py
 ```
-- The SciReviewGen dataset is stored in *dataset_path* (in the form of pandas dataframe)
+- The SciReviewGen dataset (**split_survey_df.pkl** or **original_survey_df.pkl**) is stored in *dataset_path* (in the form of pandas dataframe)
 
+## 3. Construct csv data for summarization
+- Run the following command:
+```
+python make_summarization_csv.py \
+  -dataset_path <Path to the generated dataset> \
+```
+- The summarization csv files are stored in *dataset_path*
+
+
+## Data format
+### split_survey_df & original_survey_df
+- Row: 
+  - literature review chapter or literature review paper
+- Column:
+  - paper_id: paper id used in S2ORC
+  - title: title of the literature review
+  - abstract: abstract of the literature review
+  - section: chapter title
+  - text: body text of literature review chapter or literature review paper
+  - n_bibs: number of the cited papers that can be used as inputs
+  - n_nonbibs: number of the cited papers that cannot be used as inputs
+  - bib_titles: titles of the cited papers
+  - bib_abstracts: abstracts of the cited papers
+  - bib_citing_sentences: citing sentences that cite the cited papers
+
+### Summarization csv
+
+## Additional resources
+### SciBERT-based literature review classifier
+### Code for QFiD
