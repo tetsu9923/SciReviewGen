@@ -4,8 +4,18 @@
 ## Environment
 
 - Python 3.9
-
 - Run the following script to install required packages.
 ```
 pip install -r requirements.txt
+```
+
+## 1. Preprocessing
+- Download [S2ORC](https://github.com/allenai/s2orc) (We use the version released on **2020-07-05**, which contains papers up until 2020-04-14)
+- Run the following command:
+```
+git clone https://github.com/tetsu9923/SciReviewGen.git
+cd SciReviewGen
+python json_to_df.py \
+  -s2orc_path <Path to the S2ORC full dataset directory (Typically ".../s2orc/full/20200705v1/full")> \
+  -dataset_path <Path to the generated dataset> \
 ```
