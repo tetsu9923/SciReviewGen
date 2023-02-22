@@ -76,3 +76,5 @@ We trained the [SciBERT](https://arxiv.org/abs/1903.10676)-based literature revi
 The model weight is available here.
 
 ### Query-weighted Fusion-in-Decoder (QFiD)
+We proposed Query-weighted Fusion-in-Decoder (QFiD) that explicitly considers the relevance of each input document to the queries.
+Codes for QFiD are available at codes directory.
