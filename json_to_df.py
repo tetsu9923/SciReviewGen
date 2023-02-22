@@ -88,8 +88,8 @@ if __name__ == "__main__":
     logging.basicConfig(format='%(message)s', level=logging.DEBUG)
 
     parser = argparse.ArgumentParser(description='')
-    parser.add_argument('s2orc_path', help='Path to the S2ORC full dataset directory (Typically ".../s2orc/full/20200705v1/full")')
-    parser.add_argument('dataset_path', help='Path to the generated dataset')
+    parser.add_argument('-s2orc_path', help='Path to the S2ORC full dataset directory (Typically ".../s2orc/full/20200705v1/full")')
+    parser.add_argument('-dataset_path', help='Path to the generated dataset')
     parser.add_argument('--field', default='Computer Science', help='Field of literature reviews')
     args = parser.parse_args()
 

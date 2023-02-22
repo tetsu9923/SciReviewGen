@@ -105,14 +105,14 @@ def make_scireviewgen(args):
         body_df['text'] = body_df[['text_raw', 'cite_spans']].apply(replace_cite, axis=1)
         body_df['title'] = row.title
         body_df['abstract'] = row.abstract
-        body_df['split'] = row.split
+        #body_df['split'] = row.split
     
         section_df = body_df.groupby('section').agg({
             'text': lambda text_series: ' '.join([text for text in text_series]),
             'title': lambda text_series: [text for text in text_series][0],
             'abstract': lambda text_series: [text for text in text_series][0],
             'cite_spans': lambda cite_spans_series: [cite['ref_id'] for cite_spans in cite_spans_series for cite in cite_spans],
-            'split': lambda text_series: [text for text in text_series][0],
+            #'split': lambda text_series: [text for text in text_series][0],
         })
         section_df = section_df.loc[sections]
         section_df['bibs'] = section_df['cite_spans'].apply(lambda spans: [bib_dict[span] for span in spans if span in bib_dict])
@@ -129,34 +129,35 @@ def make_scireviewgen(args):
         section_df['bib_years'] = section_df['bibs'].apply(lambda bibs: metadata_outbound_df.loc[bibs]['year'].to_dict())  
         section_df['bib_abstracts'] = section_df[['bib_abstracts', 'bib_years']].apply(lambda bib: dict(sorted(bib[0].items(), key=lambda x: bib[1][x[0]])), axis=1)  # Sort by publication year
         section_df['bib_citing_sentences'] = section_df['bibs'].apply(lambda bibs: metadata_outbound_df.loc[bibs]['citing_sentence'].to_dict())
-        section_df = section_df[['paper_id', 'title', 'abstract', 'section', 'text', 'n_bibs', 'n_nonbibs', 'bib_titles', 'bib_abstracts', 'bib_citing_sentences', 'split']]
+        section_df = section_df[['paper_id', 'title', 'abstract', 'section', 'text', 'n_bibs', 'n_nonbibs', 'bib_titles', 'bib_abstracts', 'bib_citing_sentences']]  #, 'split'
         return section_df
 
     section_survey_df = pd.concat(pdf_survey_df.apply(get_section_df, axis=1).values)
     section_survey_df = section_survey_df[section_survey_df["text"].apply(len) >= 1]  # Remove sections without body text
 
-    print(section_survey_df)
+    print(section_survey_df)  # ここまでは数合ってる
     with open ("filtering_dict.pkl", "rb") as f:
         filtering_dict = pickle.load(f)
-    section_survey_df = section_survey_df[section_survey_df["paper_id"] in filtering_dict.keys()]
+    section_survey_df = section_survey_df[section_survey_df["paper_id"].isin(filtering_dict.keys())]
     section_survey_df["split"] = section_survey_df["paper_id"].apply(lambda s: filtering_dict[s])
-    print(section_survey_df)
+    print(section_survey_df)  # 数が若干少ない
 
     if args.version == "split":
-        df = df[df["bib_abstracts"].apply(lambda _dict: len(_dict) >= 2)]
+        section_survey_df = section_survey_df[section_survey_df["bib_abstracts"].apply(lambda _dict: len(_dict) >= 2)]
+        print(section_survey_df)
         section_survey_df.to_pickle(os.path.join(args.dataset_path, 'split_survey_df.pkl'))
     else:
         section_survey_df = section_survey_df.groupby('paper_id').agg({
-            'title': lambda l: l[0],
-            'abstract': lambda l: l[0],
-            'section': lambda l: l,
-            'text': lambda l: l,
-            'n_bibs': lambda l: l,
-            'n_nonbibs': lambda l: l,
-            'bib_titles': lambda l: l,
-            'bib_abstracts': lambda l: l,
-            'bib_citing_sentences': lambda l: l,
-            'split': lambda l: l[0],
+            'title': lambda l: list(l)[0],
+            'abstract': lambda l: list(l)[0],
+            'section': lambda l: list(l),
+            'text': lambda l: list(l),
+            'n_bibs': lambda l: list(l),
+            'n_nonbibs': lambda l: list(l),
+            'bib_titles': lambda l: list(l),
+            'bib_abstracts': lambda l: list(l),
+            'bib_citing_sentences': lambda l: list(l),
+            'split': lambda l: list(l)[0],
         })
         print(section_survey_df)
         section_survey_df.to_pickle(os.path.join(args.dataset_path, 'original_survey_df.pkl'))
@@ -168,11 +169,11 @@ if __name__ == "__main__":
     logging.basicConfig(format='%(message)s', level=logging.DEBUG)
 
     parser = argparse.ArgumentParser(description='')
-    parser.add_argument('dataset_path', help='Path to the generated dataset')
-    parser.add_argument('version', default="split", help='Specify the version ("split" or "original")',  choices=['split', 'original'])
+    parser.add_argument('-dataset_path', help='Path to the generated dataset')
+    parser.add_argument('-version', default="split", help='Specify the version ("split" or "original")',  choices=['split', 'original'])
     parser.add_argument('--n_val', type=int, default=1000, help='Number of literature review papers in validation set')
     parser.add_argument('--n_test', type=int, default=1000, help='Number of literature review papers in test set')
     args = parser.parse_args()
 
-    append_citing_sentence(args)  # collect citing sentences for the cited papers
+    #append_citing_sentence(args)  # collect citing sentences for the cited papers
     make_scireviewgen(args)  # make scireviewgen dataset in the form of pandas dataframe

@@ -12,8 +12,8 @@ from tqdm import tqdm
 
 def make_summarization_csv(args):
     logging.info('Making csv files for summarization...')
-    logging.info("Columns={'reference': cited paper abstracts (+ citing sentences), 'target': literature review chapter texts}")
-    section_df = pd.read_pickle(os.path.join(args.dataset_path, 'section_survey_df.pkl'))
+    logging.info("Columns={'reference': literature review title <s> chapter title <s> abstract of cited paper 1 <s> BIB001 </s> literature review title <s> chapter title <s> abstract of cited paper 2 <s> BIB002 </s> ..., 'target': literature review chapter}")
+    section_df = pd.read_pickle(os.path.join(args.dataset_path, 'split_survey_df.pkl'))
 
     dataset_df = section_df[section_df['n_bibs'].apply(lambda n_bibs: n_bibs > 1)]  # Remove sections with less than two citations
 
@@ -36,6 +36,7 @@ def make_summarization_csv(args):
 
 
 def anonymize_bib(args):
+    logging.info('Converting BIB identifiers...')
     for split in ["val", "test", "train"]:
         df = pd.read_csv(os.path.join(args.dataset_path, '{}.csv'.format(split)))
         bar = tqdm(total=len(df))
@@ -55,7 +56,6 @@ def anonymize_bib(args):
             df.at[row.Index, "target"] = tgt
             bar.update(1)
         print("Saving...")
-        print(df)
         df.to_csv(os.path.join(args.dataset_path, '{}.csv'.format(split)))
 
 
@@ -63,7 +63,7 @@ if __name__ == "__main__":
     logging.basicConfig(format='%(message)s', level=logging.DEBUG)
 
     parser = argparse.ArgumentParser(description='')
-    parser.add_argument('dataset_path', help='Path to the generated dataset')
+    parser.add_argument('-dataset_path', help='Path to the generated dataset')
     args = parser.parse_args()
 
     make_summarization_csv(args)
