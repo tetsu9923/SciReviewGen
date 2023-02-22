@@ -9,7 +9,7 @@
 ### Data format
 #### split_survey_df & original_survey_df
 - Row: 
-  - literature review chapter or literature review paper
+  - literature review chapter or the entire text of literature review
 - Column:
   - paper_id: paper_id used in S2ORC
   - title: title of the literature review
@@ -32,7 +32,7 @@
 
 ## How to create SciReviewGen from S2ORC
 
-### Environment
+### 0. Environment
 - Python 3.9
 - Run the following script to install required packages
 ```
@@ -74,3 +74,5 @@ The summarization csv files (**train.csv**, **val.csv**, and **test.csv**) are s
 ### SciBERT-based literature review classifier
 We trained the [SciBERT](https://arxiv.org/abs/1903.10676)-based literature review classifier.
 The model weight is available here.
+
+### Query-weighted Fusion-in-Decoder (QFiD)
