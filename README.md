@@ -67,7 +67,7 @@ The SciReviewGen dataset (**split_survey_df.pkl** or **original_survey_df.pkl**)
 python make_summarization_csv.py \
   -dataset_path <Path to the generated dataset> 
 ```
-The summarization csv files (**train.csv**, **val.csv**, and **test.csv**) are stored in *dataset_path*.
+The csv files for summarization (**train.csv**, **val.csv**, and **test.csv**) are stored in *dataset_path*.
 
 
 ## Additional resources
@@ -77,4 +77,10 @@ The model weight is available here.
 
 ### Query-weighted Fusion-in-Decoder (QFiD)
 We proposed Query-weighted Fusion-in-Decoder (QFiD) that explicitly considers the relevance of each input document to the queries.
-Codes for QFiD are available at codes directory.
+You can train QFiD on SciReviewGen csv data.
+- Modify qfid/run.sh (CUDA_VISIBLE_DEVICES, csv file path, and outpput_dir)
+- Run the following command:
+```
+cd qfid
+./run.sh
+```
