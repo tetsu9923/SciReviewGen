@@ -68,6 +68,12 @@ python make_summarization_csv.py \
   -dataset_path <Path to the generated dataset> 
 ```
 The csv files for summarization (**train.csv**, **val.csv**, and **test.csv**) are stored in *dataset_path*.
+If you train QFiD on the generated csv files, add `--for_qfid` argument as below.
+```
+python make_summarization_csv.py \
+  -dataset_path <Path to the generated dataset> \
+  --for_qfid
+```
 
 
 ## Additional resources
