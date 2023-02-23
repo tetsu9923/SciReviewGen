@@ -1,9 +1,9 @@
+import re
 import os
 import logging
 import pickle
 import argparse
 
-import pickle5
 import numpy as np
 import pandas as pd
 
@@ -18,10 +18,14 @@ def make_summarization_csv(args):
     dataset_df = section_df[section_df['n_bibs'].apply(lambda n_bibs: n_bibs > 1)]  # Remove sections with less than two citations
 
     dataset_df = dataset_df.rename(columns={'text': 'target'})
-    dataset_df = dataset_df.rename(columns={'bib_cinting_sentences': 'bib_citing_sentences'})
+    dataset_df = dataset_df.rename(columns={'bib_cinting_sentences': 'bib_citing_sentences'})  # 
 
-    dataset_df['reference'] = dataset_df['bib_abstracts'].apply(lambda bib_abstracts: ' '.join(['{} BIB{}'.format(abstract, bib) for bib, abstract in bib_abstracts.items()]))
-    
+    dataset_df['reference'] = dataset_df[['bib_abstracts', 'section', 'title']].apply(lambda bib_abstracts: ' '.join(['</s> {} <s> {} <s> {} <s> BIB{}'.format(bib_abstracts[2], bib_abstracts[1], abstract, bib) for bib, abstract in bib_abstracts[0].items()]), axis=1)
+    if args.for_qfid:
+        dataset_df['reference'] = dataset_df['title'] + ' <s> ' + dataset_df['section'] + ' ' + dataset_df['reference']
+    else:
+        dataset_df['reference'] = dataset_df['reference'].apply(lambda s: s[5:])
+
     split_df = dataset_df['split']
     dataset_df = dataset_df[['reference', 'target']]
 
@@ -64,6 +68,7 @@ if __name__ == "__main__":
 
     parser = argparse.ArgumentParser(description='')
     parser.add_argument('-dataset_path', help='Path to the generated dataset')
+    parser.add_argument('--for_qfid', action='store_true', help='Add if you train QFiD on the generated csv files')
     args = parser.parse_args()
 
     make_summarization_csv(args)

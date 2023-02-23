@@ -3,7 +3,6 @@ import logging
 import pickle
 import argparse
 
-import pickle5
 import pandas as pd
 
 from tqdm import tqdm

@@ -833,7 +833,6 @@ class BartEncoder(BartPretrainedModel):
             else:
                 abst_hidden_states = torch.mean(_hidden_states.index_select(0, torch.tensor([i for i, mask in enumerate(_attention_mask) if mask == 1], device="cuda")), dim=0)
                 matching_list.append(torch.dot(title_hidden_states, abst_hidden_states).item())
-        print(matching_list)
 
         f = torch.nn.Softmax(dim=0)
         matching_list = f(torch.tensor(matching_list, dtype=torch.float32))
@@ -847,8 +846,6 @@ class BartEncoder(BartPretrainedModel):
         #    matching_list = [1]
         #else:
         #    matching_list = [0.5 + (i - min(matching_list)) / (max(matching_list) - min(matching_list)) for i in matching_list]
-        
-        print(matching_list)
         
         for i, (_hidden_states, _attention_mask) in enumerate(zip(hidden_states, original_attention_mask)):
             if i == 0:

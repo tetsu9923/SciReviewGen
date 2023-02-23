@@ -3,7 +3,7 @@ import logging
 import pickle
 import argparse
 
-import pickle5
+#import pickle5
 import nltk.data
 import numpy as np
 import pandas as pd

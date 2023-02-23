@@ -49,7 +49,7 @@ from transformers.file_utils import is_offline_mode
 from transformers.trainer_utils import get_last_checkpoint
 from transformers.utils import check_min_version
 from transformers.utils.versions import require_version
-from FiD.fid_onebyone_matching_softmaxplusone import BartForConditionalGeneration
+from qfid import BartForConditionalGeneration
 
 
 # Will error if the minimal version of Transformers is not installed. Remove at your own risks.
@@ -387,8 +387,8 @@ def main():
         use_auth_token=True if model_args.use_auth_token else None,
     )
 
-    special_tokens_dict = {'additional_special_tokens': ['[BOT]', '[BOCT]', '[BOA]', '[BOC]', '[BOB]']}# + ['BIB{:0>3}'.format(i+1) for i in range(100)]}
-    tokenizer.add_special_tokens(special_tokens_dict)
+    #special_tokens_dict = {'additional_special_tokens': ['[BOT]', '[BOCT]', '[BOA]', '[BOC]', '[BOB]']}# + ['BIB{:0>3}'.format(i+1) for i in range(100)]}
+    #tokenizer.add_special_tokens(special_tokens_dict)
 
     model.resize_token_embeddings(len(tokenizer))
 
