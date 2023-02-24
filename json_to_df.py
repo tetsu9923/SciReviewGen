@@ -63,11 +63,11 @@ def save_pdf_df(args):
         pdf_survey_df = pdf_df.loc[pdf_survey_paper_ids]
         pdf_survey_df = pdf_survey_df[['body_text', 'bib_entries']]
 
-        pdf_survey_df["title"] = ""
-        pdf_survey_df["abstract"] = ""
+        pdf_survey_df['title'] = ''
+        pdf_survey_df['abstract'] = ''
         for i, row in enumerate(pdf_survey_df.itertuples()):
-            pdf_survey_df.at[pdf_survey_df.index[i], "title"] = metadata_survey_df.query('paper_id == @row.Index')["title"].item()
-            pdf_survey_df.at[pdf_survey_df.index[i], "abstract"] = metadata_survey_df.query('paper_id == @row.Index')["abstract"].item()
+            pdf_survey_df.at[pdf_survey_df.index[i], 'title'] = metadata_survey_df.query('paper_id == @row.Index')['title'].item()
+            pdf_survey_df.at[pdf_survey_df.index[i], 'abstract'] = metadata_survey_df.query('paper_id == @row.Index')['abstract'].item()
         pdf_survey_dfs.append(pdf_survey_df)
     
         pdf_outbound_paper_ids = list(set(outbound_index) & set(pdf_df.index))
@@ -83,7 +83,7 @@ def save_pdf_df(args):
     logging.info('Done!')
 
     
-if __name__ == "__main__":
+if __name__ == '__main__':
     logging.basicConfig(format='%(message)s', level=logging.DEBUG)
 
     parser = argparse.ArgumentParser(description='')

@@ -730,10 +730,7 @@ class BartEncoder(BartPretrainedModel):
         else:
             raise ValueError("You have to specify either input_ids or inputs_embeds")
 
-        # ここから変える
-        # とりあえず入力としてはinput_ids, attention_maskのみ考慮すればいい
-
-        # input_idsとattention_maskを</s>で分割
+        # divide input_ids and attention_mask by '</s>'
         input_ids_list = []
         attention_mask_list = []
         prev_token = 0
@@ -741,14 +738,12 @@ class BartEncoder(BartPretrainedModel):
         n_sep = 0
         for i, token in enumerate(input_ids[0]):
             if token == 2 and prev_token == 1437:
-                #input_ids_list.append(torch.cat((torch.tensor([0], device="cuda"), torch.tensor(input_ids[0][prev_i:i-1]), torch.tensor([2], device="cuda")))[:self.config.max_position_embeddings].unsqueeze(dim=0))
                 input_ids_list.append(torch.cat((torch.cat((torch.tensor([0], device="cuda"), torch.tensor(input_ids[0][prev_i:i-1])))[:min(len(input_ids[0][prev_i-1:i-1]), self.config.max_position_embeddings-1)], torch.tensor([2], device="cuda"))).unsqueeze(dim=0))
                 attention_mask_list.append(torch.tensor(attention_mask[0][prev_i-1:i])[:self.config.max_position_embeddings].unsqueeze(dim=0))                
                 prev_i = i + 1
                 n_sep += 1
             prev_token = token
         
-        #input_ids_list.append(torch.cat((torch.tensor([0], device="cuda"), torch.tensor(input_ids[0][prev_i:])))[:self.config.max_position_embeddings].unsqueeze(dim=0))
         input_ids_list.append(torch.cat((torch.cat((torch.tensor([0], device="cuda"), torch.tensor(input_ids[0][prev_i:])))[:min(len(input_ids[0][prev_i:]), self.config.max_position_embeddings-1)], torch.tensor([2], device="cuda"))).unsqueeze(dim=0))
         attention_mask_list.append((torch.tensor(attention_mask[0][prev_i-1:]))[:self.config.max_position_embeddings].unsqueeze(dim=0))
 
@@ -823,9 +818,6 @@ class BartEncoder(BartPretrainedModel):
         if output_hidden_states:
             encoder_states = encoder_states + (hidden_states,)
 
-        #hidden_states = hidden_states.reshape(1, -1, 1024)
-        #print(hidden_states.shape)
-
         matching_list = []
         for i, (_hidden_states, _attention_mask) in enumerate(zip(hidden_states, original_attention_mask)):
             if i == 0:
@@ -839,13 +831,7 @@ class BartEncoder(BartPretrainedModel):
         try:
             matching_list = (1 + matching_list).tolist()
         except:
-            print("zero division!!")
             matching_list = [1 for i in range(len(matching_list))]
-
-        #if len(matching_list) <= 1:
-        #    matching_list = [1]
-        #else:
-        #    matching_list = [0.5 + (i - min(matching_list)) / (max(matching_list) - min(matching_list)) for i in matching_list]
         
         for i, (_hidden_states, _attention_mask) in enumerate(zip(hidden_states, original_attention_mask)):
             if i == 0:
@@ -853,8 +839,6 @@ class BartEncoder(BartPretrainedModel):
             else:
                 return_hidden_states = torch.cat((return_hidden_states, matching_list[i-1] * _hidden_states.index_select(0, torch.tensor([i for i, mask in enumerate(_attention_mask) if mask == 1], device="cuda"))), 0)
 
-        #print(return_hidden_states.shape)
-        # return_dict = True, hidden_statesのみ返す
         if not return_dict:
             return tuple(v for v in [hidden_states, encoder_states, all_attentions] if v is not None)
         return BaseModelOutput(
