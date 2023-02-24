@@ -137,7 +137,7 @@ def make_scireviewgen(args):
     section_survey_df['split'] = section_survey_df['paper_id'].apply(lambda s: filtering_dict[s])
 
     if args.version == 'split':
-        section_survey_df = section_survey_df[section_survey_df['bib_abstracts'].apply(lambda _dict: len(_dict) >= 2)]
+        section_survey_df = section_survey_df[section_survey_df['bib_abstracts'].apply(lambda _dict: len(_dict) >= 2)]  # Remove sections with less than two cited papers
         section_survey_df.to_pickle(os.path.join(args.dataset_path, 'split_survey_df.pkl'))
     else:
         section_survey_df = section_survey_df.groupby('paper_id').agg({

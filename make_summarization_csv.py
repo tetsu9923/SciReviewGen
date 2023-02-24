@@ -19,7 +19,7 @@ def make_summarization_csv(args):
         logging.info('Columns={"reference": literature review title <s> chapter title <s> abstract of cited paper 1 <s> BIB001 </s> literature review title <s> chapter title <s> abstract of cited paper 2 <s> BIB002 </s> ..., "target": literature review chapter}')
     section_df = pd.read_pickle(os.path.join(args.dataset_path, 'split_survey_df.pkl'))
 
-    dataset_df = section_df[section_df['n_bibs'].apply(lambda n_bibs: n_bibs > 1)]  # Remove sections with less than two citations
+    dataset_df = section_df[section_df['n_bibs'].apply(lambda n_bibs: n_bibs >= 2)]
 
     dataset_df = dataset_df.rename(columns={'text': 'target'})
     dataset_df = dataset_df.rename(columns={'bib_cinting_sentences': 'bib_citing_sentences'})

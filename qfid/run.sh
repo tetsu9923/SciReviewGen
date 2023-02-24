@@ -4,12 +4,12 @@ CUDA_VISIBLE_DEVICES=3 \
     --do_train \
     --do_eval \
     --do_predict \
-    --train_file ../dataset/train.csv \
-    --validation_file ../dataset/val.csv \
-    --test_file ../dataset/test.csv \
+    --train_file ../dataset/train_qfid.csv \
+    --validation_file ../dataset/val_qfid.csv \
+    --test_file ../dataset/test_qfid.csv \
     --text_column reference \
     --summary_column target \
-    --output_dir /home/t-kasanishi/scireviewgentest \
+    --output_dir ./test \
     --per_device_train_batch_size=1 \
     --per_device_eval_batch_size=1 \
     --num_train_epochs=1 \
