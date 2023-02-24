@@ -2,9 +2,9 @@
 **This is the official dataset repository for `SciReviewGen: A Large-scale Dataset for Automatic Literature Review Generation` in ACL 2023.**
 
 ## Dataset
-- split_survey_df: The split version of SciReviewGen, which aims to generate literature review **chapters**
-- original_survey_df: The original version of SciReviewGen, which aims to generate **the entire text** of literature reviews
-- summarization_csv: CSV files suitable for summarization task
+- [split_survey_df](https://drive.google.com/file/d/1BUj7Eb8vl-hl8qNFIAK--ONkj_UIwwNN/view?usp=share_link): The split version of SciReviewGen, which aims to generate literature review **chapters**
+- [original_survey_df](https://drive.google.com/file/d/1xFiSXWBLKTHmnlSP9iPDfwEUOg8KaXln/view?usp=share_link): The original version of SciReviewGen, which aims to generate **the entire text** of literature reviews
+- [summarization_csv](https://drive.google.com/drive/folders/1q_tI99-UTosq_Hpus0V5E5T3LLndArRo?usp=sharing): CSV files suitable for summarization task
 
 ### Data format
 #### split_survey_df & original_survey_df
@@ -80,7 +80,7 @@ python make_summarization_csv.py \
 ## Additional resources
 ### SciBERT-based literature review classifier
 We trained the [SciBERT](https://arxiv.org/abs/1903.10676)-based literature review classifier.
-The model weight is available here.
+The model weights are available [here](https://drive.google.com/drive/folders/1eYRXC3BOJtd49eBekUrLJxsrGBz1vM5C?usp=sharing).
 
 ### Query-weighted Fusion-in-Decoder (QFiD)
 We proposed Query-weighted Fusion-in-Decoder (QFiD) that explicitly considers the relevance of each input document to the queries.
