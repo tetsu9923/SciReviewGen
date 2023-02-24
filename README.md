@@ -57,7 +57,7 @@ The metadata and pdf parses of the literature reviews and the cited papers are s
 ```
 python make_section_df.py \
   -dataset_path <Path to the generated dataset> \
-  -version <the version of SciReviewGen ("split" or "original")>
+  --version <Optional: the version of SciReviewGen ("split" or "original", default="split")>
 ```
 The SciReviewGen dataset (**split_survey_df.pkl** or **original_survey_df.pkl**) is stored in *dataset_path* (in the form of pandas dataframe).
 
