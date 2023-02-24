@@ -33,16 +33,24 @@ def make_summarization_csv(args):
     val_df = dataset_df[split_df == 'val']
     test_df = dataset_df[split_df == 'test']
 
-    train_df.to_csv(os.path.join(args.dataset_path, 'train.csv'))
-    val_df.to_csv(os.path.join(args.dataset_path, 'val.csv'))
-    test_df.to_csv(os.path.join(args.dataset_path, 'test.csv'))
+    if args.for_qfid:
+        train_df.to_csv(os.path.join(args.dataset_path, 'train_qfid.csv'))
+        val_df.to_csv(os.path.join(args.dataset_path, 'val_qfid.csv'))
+        test_df.to_csv(os.path.join(args.dataset_path, 'test_qfid.csv'))
+    else:
+        train_df.to_csv(os.path.join(args.dataset_path, 'train.csv'))
+        val_df.to_csv(os.path.join(args.dataset_path, 'val.csv'))
+        test_df.to_csv(os.path.join(args.dataset_path, 'test.csv'))
     logging.info('Done!')
 
 
 def anonymize_bib(args):
     logging.info('Converting BIB identifiers...')
     for split in ["val", "test", "train"]:
-        df = pd.read_csv(os.path.join(args.dataset_path, '{}.csv'.format(split)))
+        if args.for_qfid:
+            df = pd.read_csv(os.path.join(args.dataset_path, '{}_qfid.csv'.format(split)))
+        else:
+            df = pd.read_csv(os.path.join(args.dataset_path, '{}.csv'.format(split)))
         bar = tqdm(total=len(df))
         for row in df.itertuples():
             cnt = 1
@@ -60,7 +68,10 @@ def anonymize_bib(args):
             df.at[row.Index, "target"] = tgt
             bar.update(1)
         print("Saving...")
-        df.to_csv(os.path.join(args.dataset_path, '{}.csv'.format(split)))
+        if args.for_qfid:
+            df.to_csv(os.path.join(args.dataset_path, '{}_qfid.csv'.format(split)))
+        else:
+            df.to_csv(os.path.join(args.dataset_path, '{}.csv'.format(split)))
 
 
 if __name__ == "__main__":

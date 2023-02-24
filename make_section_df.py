@@ -170,10 +170,10 @@ if __name__ == "__main__":
 
     parser = argparse.ArgumentParser(description='')
     parser.add_argument('-dataset_path', help='Path to the generated dataset')
-    parser.add_argument('-version', default="split", help='Specify the version ("split" or "original")',  choices=['split', 'original'])
+    parser.add_argument('--version', default="split", help='Specify the version ("split" or "original")',  choices=['split', 'original'])
     parser.add_argument('--n_val', type=int, default=1000, help='Number of literature review papers in validation set')
     parser.add_argument('--n_test', type=int, default=1000, help='Number of literature review papers in test set')
     args = parser.parse_args()
 
-    #append_citing_sentence(args)  # collect citing sentences for the cited papers
+    append_citing_sentence(args)  # collect citing sentences for the cited papers
     make_scireviewgen(args)  # make scireviewgen dataset in the form of pandas dataframe
