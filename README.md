@@ -50,7 +50,7 @@ python json_to_df.py \
   -dataset_path <Path to the generated dataset> \
   --field <Optional: the field of the literature reviews (default="Computer Science")>
 ```
-The metadata and pdf parses of the literature reviews and the cited papers are stored in *dataset_path* (in the form of pandas dataframe).
+The metadata and pdf parses of the candidates for the literature reviews and the cited papers are stored in *dataset_path* (in the form of pandas dataframe).
 
 ### 2. Construct SciReviewGen
 - Run the following command:
@@ -60,6 +60,7 @@ python make_section_df.py \
   --version <Optional: the version of SciReviewGen ("split" or "original", default="split")>
 ```
 The SciReviewGen dataset (**split_survey_df.pkl** or **original_survey_df.pkl**) is stored in *dataset_path* (in the form of pandas dataframe).
+`filtered_dict.pkl` give the list of literature reviews filtered by the [SciBERT](https://arxiv.org/abs/1903.10676)-based classifier (Section 3.2).
 
 ### 3. Construct csv data for summarization
 - Run the following command:
