@@ -48,7 +48,7 @@ cd SciReviewGen
 python json_to_df.py \
   -s2orc_path <Path to the S2ORC full dataset directory (Typically ".../s2orc/full/20200705v1/full")> \
   -dataset_path <Path to the generated dataset> \
-  --field <Optional: the field of the literature reviews (default="Computer Science")>
+  --field <Optional: the field of the literature reviews (mag_field_of_study in S2ORC, default="Computer Science")>
 ```
 The metadata and pdf parses of the candidates for the literature reviews and the cited papers are stored in *dataset_path* (in the form of pandas dataframe).
 
