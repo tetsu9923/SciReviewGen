@@ -34,7 +34,7 @@
 
 ### 0. Environment
 - Python 3.9
-- Run the following script to install required packages
+- Run the following command to install required packages
 ```
 pip install -r requirements.txt
 ```
@@ -85,9 +85,16 @@ The model weights are available [here](https://drive.google.com/drive/folders/1e
 ### Query-weighted Fusion-in-Decoder (QFiD)
 We proposed Query-weighted Fusion-in-Decoder (QFiD) that explicitly considers the relevance of each input document to the queries.
 You can train QFiD on SciReviewGen csv data.
-- Modify qfid/run.sh (CUDA_VISIBLE_DEVICES, csv file path, and outpput_dir)
+#### Train
+- Modify qfid/train.sh (CUDA_VISIBLE_DEVICES, csv file path, and outpput_dir)
 - Run the following command:
 ```
 cd qfid
-./run.sh
+./train.sh
+```
+#### Test
+- Modify qfid/test.sh (CUDA_VISIBLE_DEVICES, csv file path, and outpput_dir). **Please set *num_train_epochs* as the number of epochs you trained in total.**
+- Run the following command:
+```
+./test.sh
 ```
