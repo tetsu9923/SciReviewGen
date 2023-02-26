@@ -33,7 +33,7 @@
 ## How to create SciReviewGen from S2ORC
 ### 0. Environment
 - Python 3.9
-- Run the following command to install required packages
+- Run the following command to install the required packages
 ```
 pip install -r requirements.txt
 ```
@@ -59,7 +59,7 @@ python make_section_df.py \
   --version <Optional: the version of SciReviewGen ("split" or "original", default="split")>
 ```
 The SciReviewGen dataset (**split_survey_df.pkl** or **original_survey_df.pkl**) is stored in *dataset_path* (in the form of pandas dataframe).
-`filtered_dict.pkl` give the list of literature reviews filtered by the [SciBERT](https://arxiv.org/abs/1903.10676)-based classifier (Section 3.2).
+`filtered_dict.pkl` gives the list of literature reviews after filtering by the [SciBERT](https://arxiv.org/abs/1903.10676)-based classifier (Section 3.2).
 
 ### 3. Construct csv data for summarization
 - Run the following command:
@@ -85,14 +85,14 @@ The model weights are available [here](https://drive.google.com/drive/folders/1e
 We proposed Query-weighted Fusion-in-Decoder (QFiD) that explicitly considers the relevance of each input document to the queries.
 You can train QFiD on SciReviewGen csv data.
 #### Train
-- Modify qfid/train.sh (CUDA_VISIBLE_DEVICES, csv file path, and outpput_dir)
+- Modify qfid/train.sh (CUDA_VISIBLE_DEVICES, csv file path, outpput_dir, and num_train_epochs)
 - Run the following command:
 ```
 cd qfid
 ./train.sh
 ```
 #### Test
-- Modify qfid/test.sh (CUDA_VISIBLE_DEVICES, csv file path, and outpput_dir). **Please set *num_train_epochs* as the number of epochs you trained in total.**
+- Modify qfid/test.sh (CUDA_VISIBLE_DEVICES, csv file path, outpput_dir, and num_train_epochs. **Please set *num_train_epochs* as the number of epochs you trained in total**)
 - Run the following command:
 ```
 ./test.sh
