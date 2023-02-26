@@ -31,7 +31,6 @@
 
 
 ## How to create SciReviewGen from S2ORC
-
 ### 0. Environment
 - Python 3.9
 - Run the following command to install required packages
