@@ -11,7 +11,7 @@
 - Row: 
   - literature review chapter or the entire text of literature review
 - Column:
-  - paper_id: paper_id used in S2ORC
+  - paper_id: paper_id used in [S2ORC](https://github.com/allenai/s2orc)
   - title: title of the literature review
   - abstract: abstract of the literature review
   - section: chapter title
@@ -97,3 +97,7 @@ cd qfid
 ```
 ./test.sh
 ```
+
+## Licenses
+- SciReviewGen is released under [CC BY-NC 4.0](https://creativecommons.org/licenses/by-nc/4.0/). **You can use SciReviewGen for only non-commercial purposes.**
+- SciReviewGen is created based on [S2ORC](https://github.com/allenai/s2orc). Note that S2ORC is released under CC BY-NC 4.0, which allows users to copy and redistribute for only non-commercial purposes.
