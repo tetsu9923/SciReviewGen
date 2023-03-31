@@ -2,16 +2,16 @@
 **This is the official dataset repository for `SciReviewGen: A Large-scale Dataset for Automatic Literature Review Generation` in ACL 2023.**
 
 ## Dataset
-- [split_survey_df](https://drive.google.com/file/d/1BUj7Eb8vl-hl8qNFIAK--ONkj_UIwwNN/view?usp=share_link): The split version of SciReviewGen, which aims to generate literature review **chapters**
-- [original_survey_df](https://drive.google.com/file/d/1xFiSXWBLKTHmnlSP9iPDfwEUOg8KaXln/view?usp=share_link): The original version of SciReviewGen, which aims to generate **the entire text** of literature reviews
-- [summarization_csv](https://drive.google.com/drive/folders/1q_tI99-UTosq_Hpus0V5E5T3LLndArRo?usp=sharing): CSV files suitable for summarization task
+- [split_survey_df](https://drive.google.com/file/d/1S6v-xaCDND4ilK38sEpkfcOoMnffX7Zf/view?usp=sharing): The split version of SciReviewGen, which aims to generate literature review **chapters**
+- [original_survey_df](https://drive.google.com/file/d/1MnjQ2fQ_fJjcqKvIwj2w7P6IGh4GszXH/view?usp=sharing): The original version of SciReviewGen, which aims to generate **the entire text** of literature reviews
+- [summarization_csv](https://drive.google.com/file/d/1okvILkxfrpTQYWLxbV4lM9BQnuVaAfbY/view?usp=sharing): CSV files suitable for summarization task. You can apply them to [HuggingFace's official sample codes](https://github.com/huggingface/transformers/tree/main/examples/pytorch/summarization#custom-csv-files).
 
 ### Data format
 #### split_survey_df & original_survey_df
 - Row: 
   - literature review chapter or the entire text of literature review
 - Column:
-  - paper_id: paper_id used in S2ORC
+  - paper_id: paper_id used in [S2ORC](https://github.com/allenai/s2orc)
   - title: title of the literature review
   - abstract: abstract of the literature review
   - section: chapter title
@@ -21,6 +21,7 @@
   - bib_titles: titles of the cited papers
   - bib_abstracts: abstracts of the cited papers
   - bib_citing_sentences: citing sentences that cite the cited papers
+  - split: train/val/test split
 
 #### summarization_csv
 - Row: 
@@ -31,10 +32,9 @@
 
 
 ## How to create SciReviewGen from S2ORC
-
 ### 0. Environment
 - Python 3.9
-- Run the following command to install required packages
+- Run the following command to install the required packages
 ```
 pip install -r requirements.txt
 ```
@@ -60,7 +60,7 @@ python make_section_df.py \
   --version <Optional: the version of SciReviewGen ("split" or "original", default="split")>
 ```
 The SciReviewGen dataset (**split_survey_df.pkl** or **original_survey_df.pkl**) is stored in *dataset_path* (in the form of pandas dataframe).
-`filtered_dict.pkl` give the list of literature reviews filtered by the [SciBERT](https://arxiv.org/abs/1903.10676)-based classifier (Section 3.2).
+`filtered_dict.pkl` gives the list of literature reviews after filtering by the [SciBERT](https://arxiv.org/abs/1903.10676)-based classifier (Section 3.2).
 
 ### 3. Construct csv data for summarization
 - Run the following command:
@@ -80,21 +80,25 @@ python make_summarization_csv.py \
 ## Additional resources
 ### SciBERT-based literature review classifier
 We trained the [SciBERT](https://arxiv.org/abs/1903.10676)-based literature review classifier.
-The model weights are available [here](https://drive.google.com/drive/folders/1eYRXC3BOJtd49eBekUrLJxsrGBz1vM5C?usp=sharing).
+The model weights are available [here](https://drive.google.com/file/d/1cPGJpvCFQkHX2td99YyFitBirG-eCcLC/view?usp=sharing).
 
 ### Query-weighted Fusion-in-Decoder (QFiD)
 We proposed Query-weighted Fusion-in-Decoder (QFiD) that explicitly considers the relevance of each input document to the queries.
 You can train QFiD on SciReviewGen csv data.
 #### Train
-- Modify qfid/train.sh (CUDA_VISIBLE_DEVICES, csv file path, and outpput_dir)
+- Modify qfid/train.sh (CUDA_VISIBLE_DEVICES, csv file path, outpput_dir, and num_train_epochs)
 - Run the following command:
 ```
 cd qfid
 ./train.sh
 ```
 #### Test
-- Modify qfid/test.sh (CUDA_VISIBLE_DEVICES, csv file path, and outpput_dir). **Please set *num_train_epochs* as the number of epochs you trained in total.**
+- Modify qfid/test.sh (CUDA_VISIBLE_DEVICES, csv file path, outpput_dir, and num_train_epochs. **Please set *num_train_epochs* as the number of epochs you trained in total**)
 - Run the following command:
 ```
 ./test.sh
 ```
+
+## Licenses
+- SciReviewGen is released under [CC BY-NC 4.0](https://creativecommons.org/licenses/by-nc/4.0/). **You can use SciReviewGen for only non-commercial purposes.**
+- SciReviewGen is created based on [S2ORC](https://github.com/allenai/s2orc). Note that S2ORC is released under CC BY-NC 4.0, which allows users to copy and redistribute for only non-commercial purposes.
