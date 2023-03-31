@@ -2,7 +2,7 @@ transformers==4.16.0
 datasets==1.18.4
 numpy==1.22.3
 pandas==1.4.1
-torch
+torch==1.11.0
 filelock
 nltk
 tqdm
