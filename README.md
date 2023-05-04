@@ -84,7 +84,7 @@ The model weights are available [here](https://drive.google.com/file/d/1cPGJpvCF
 
 ### Query-weighted Fusion-in-Decoder (QFiD)
 We proposed Query-weighted Fusion-in-Decoder (QFiD) that explicitly considers the relevance of each input document to the queries.
-You can train QFiD on SciReviewGen csv data.
+You can train QFiD on SciReviewGen csv data (**Make sure that you passed** `--for_qfid` **argument when executing** `make_summarization_csv.py`).
 #### Train
 - Modify qfid/train.sh (CUDA_VISIBLE_DEVICES, csv file path, outpput_dir, and num_train_epochs)
 - Run the following command:
