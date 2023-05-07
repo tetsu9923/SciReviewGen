@@ -4,7 +4,7 @@
 ## Dataset
 - [split_survey_df](https://drive.google.com/file/d/1S6v-xaCDND4ilK38sEpkfcOoMnffX7Zf/view?usp=sharing): The split version of SciReviewGen, which aims to generate literature review **chapters**
 - [original_survey_df](https://drive.google.com/file/d/1MnjQ2fQ_fJjcqKvIwj2w7P6IGh4GszXH/view?usp=sharing): The original version of SciReviewGen, which aims to generate **the entire text** of literature reviews
-- [summarization_csv](https://drive.google.com/file/d/1okvILkxfrpTQYWLxbV4lM9BQnuVaAfbY/view?usp=sharing): CSV files suitable for summarization task. You can apply them to [HuggingFace's official sample codes](https://github.com/huggingface/transformers/tree/main/examples/pytorch/summarization#custom-csv-files).
+- [summarization_csv](https://drive.google.com/file/d/1okvILkxfrpTQYWLxbV4lM9BQnuVaAfbY/view?usp=sharing): CSV files suitable for summarization task. You can apply them to [HuggingFace's official sample codes](https://github.com/huggingface/transformers/tree/main/examples/pytorch/summarization#custom-csv-files)
 
 ### Data format
 #### split_survey_df & original_survey_df
