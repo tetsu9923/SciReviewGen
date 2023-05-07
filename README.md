@@ -34,8 +34,10 @@
 ## How to create SciReviewGen from S2ORC
 ### 0. Environment
 - Python 3.9
-- Run the following command to install the required packages
+- Run the following command to clone the repository and install the required packages
 ```
+git clone https://github.com/tetsu9923/SciReviewGen.git
+cd SciReviewGen
 pip install -r requirements.txt
 ```
 
@@ -43,8 +45,6 @@ pip install -r requirements.txt
 - Download [S2ORC](https://github.com/allenai/s2orc) (We use the version released on **2020-07-05**, which contains papers up until 2020-04-14)
 - Run the following command:
 ```
-git clone https://github.com/tetsu9923/SciReviewGen.git
-cd SciReviewGen
 python json_to_df.py \
   -s2orc_path <Path to the S2ORC full dataset directory (Typically ".../s2orc/full/20200705v1/full")> \
   -dataset_path <Path to the generated dataset> \
