@@ -38,13 +38,13 @@ def make_summarization_csv(args):
     test_df = dataset_df[split_df == 'test']
 
     if args.for_qfid:
-        train_df.to_csv(os.path.join(args.dataset_path, 'train_qfid.csv'))
-        val_df.to_csv(os.path.join(args.dataset_path, 'val_qfid.csv'))
-        test_df.to_csv(os.path.join(args.dataset_path, 'test_qfid.csv'))
+        train_df.to_csv(os.path.join(args.dataset_path, 'train_qfid.csv'), index=False)
+        val_df.to_csv(os.path.join(args.dataset_path, 'val_qfid.csv'), index=False)
+        test_df.to_csv(os.path.join(args.dataset_path, 'test_qfid.csv'), index=False)
     else:
-        train_df.to_csv(os.path.join(args.dataset_path, 'train.csv'))
-        val_df.to_csv(os.path.join(args.dataset_path, 'val.csv'))
-        test_df.to_csv(os.path.join(args.dataset_path, 'test.csv'))
+        train_df.to_csv(os.path.join(args.dataset_path, 'train.csv'), index=False)
+        val_df.to_csv(os.path.join(args.dataset_path, 'val.csv'), index=False)
+        test_df.to_csv(os.path.join(args.dataset_path, 'test.csv'), index=False)
     logging.info('Done!')
 
 
@@ -73,9 +73,9 @@ def anonymize_bib(args):
             bar.update(1)
         logging.info('Saving...')
         if args.for_qfid:
-            df.to_csv(os.path.join(args.dataset_path, '{}_qfid.csv'.format(split)))
+            df.to_csv(os.path.join(args.dataset_path, '{}_qfid.csv'.format(split)), index=False)
         else:
-            df.to_csv(os.path.join(args.dataset_path, '{}.csv'.format(split)))
+            df.to_csv(os.path.join(args.dataset_path, '{}.csv'.format(split)), index=False)
 
 
 if __name__ == '__main__':
