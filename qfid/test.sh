@@ -1,4 +1,4 @@
-CUDA_VISIBLE_DEVICES=3 \
+CUDA_VISIBLE_DEVICES=0 \
     python run_summarization.py \
     --model_name_or_path facebook/bart-large-cnn \
     --do_train \
