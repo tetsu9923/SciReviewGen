@@ -1,5 +1,5 @@
 # SciReviewGen
-**This is the official dataset repository for `SciReviewGen: A Large-scale Dataset for Automatic Literature Review Generation` in ACL findings 2023.**
+**This is the official dataset repository for [SciReviewGen: A Large-scale Dataset for Automatic Literature Review Generation](https://arxiv.org/pdf/2305.15186.pdf) in ACL findings 2023.**
 
 ## Dataset
 - [split_survey_df](https://drive.google.com/file/d/1S6v-xaCDND4ilK38sEpkfcOoMnffX7Zf/view?usp=sharing): The split version of SciReviewGen, which aims to generate literature review **chapters**
